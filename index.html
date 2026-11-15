@@ -57,7 +57,7 @@
   --ink:#f3e3cf; --paper:#0b0a09; --card:#15110e; --line:#3a2a1d; --muted:#bda186;
   --signal:#e0975a; --on-signal:#140b04; --wa:#1f8a4d;
   --fill:#e0975a; --on-fill:#140b04; --art:#3b2412;
-  --board:#000000; --board-ink:#e8ad78; --board-line:#c98448;
+  --board:#000000; --board-ink:#e8ad78; --board-line:#c98448; --tagbg:#4a3119;
   --t1:#f3e2cc; --t2:#efd3b8; --t3:#e8dcc4; --t4:#e9dccf; --tape:#6b4a2f;
   color-scheme:dark;
 }
@@ -145,15 +145,26 @@ section{padding:28px 0}
 .card h3{font-size:19px}
 .spec{color:var(--muted);font-size:15px;margin:0;line-height:1.45}
 .buy{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:12px}
-.price{position:relative;font-family:var(--display);font-size:21px;background:var(--board);color:var(--board-ink);padding:5px 12px 5px 24px;clip-path:polygon(14px 0,100% 0,100% 100%,14px 100%,0 50%);font-variant-numeric:tabular-nums}
+.price{position:relative;font-family:var(--display);font-size:21px;background:var(--tagbg,var(--board));color:var(--board-ink);padding:5px 12px 5px 24px;clip-path:polygon(14px 0,100% 0,100% 100%,14px 100%,0 50%);font-variant-numeric:tabular-nums}
 .price::before{content:"";position:absolute;left:11px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:var(--paper)}
 .card:nth-child(even) .price{transform:rotate(-2deg)}
 .card:nth-child(odd) .price{transform:rotate(1.5deg)}
+.art img{width:100%;height:100%;object-fit:cover;display:block}
+.add[disabled]{opacity:.45;cursor:not-allowed}
 .add{background:var(--fill);color:var(--on-fill);border:0;border-radius:8px;padding:9px 13px;font-weight:600}
-.add:hover{background:var(--signal);color:var(--on-signal)}
+.add:not([disabled]):hover{background:var(--signal);color:var(--on-signal)}
 .empty{padding:26px;text-align:center;color:var(--muted);border:2px dashed var(--line);border-radius:12px}
 .fine{font-size:15px;color:var(--muted);margin:14px 0 0}
 
+.reviews[hidden]{display:none}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px;align-items:start}
+.note-card{position:relative;background:var(--card);border:1px solid var(--line);padding:22px 18px 16px;box-shadow:3px 5px 0 rgba(0,0,0,.12);margin:0}
+.note-card:nth-child(odd){transform:rotate(-1deg)}
+.note-card:nth-child(even){transform:rotate(1deg)}
+.note-card::before{content:"";position:absolute;left:50%;top:-11px;width:70px;height:22px;margin-left:-35px;background:var(--tape);opacity:.85;transform:rotate(2deg)}
+.stars{color:var(--signal);letter-spacing:2px;font-size:19px}
+.note-card blockquote{margin:6px 0 10px;font-size:17px}
+.note-card figcaption{font-family:var(--hand);font-size:18px;font-weight:700;color:var(--muted)}
 /* about and how to order */
 .talk .wrap{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
 .talk h2{font-size:clamp(26px,4vw,36px);margin-bottom:10px}
@@ -262,6 +273,14 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:6px 24px;justify-content:space-betw
   <p class="fine hand" style="font-size:18px">Prices here are a guide. We confirm the final price and stock with you on WhatsApp before you pay anything.</p>
 </div></section>
 
+<section class="reviews" id="reviews" hidden><div class="wrap">
+  <div class="shelfhead">
+    <div><h2>What our customers say</h2><span class="hand" id="gsum">Reviews from Google</span></div>
+    <a class="btn" href="https://maps.app.goo.gl/CjojBMkrNXVRF5XdA">See all reviews on Google</a>
+  </div>
+  <div class="notes" id="notes"></div>
+</div></section>
+
 <section class="talk" id="about"><div class="wrap">
   <div>
     <h2>A shop Dehradun knows</h2>
@@ -333,6 +352,52 @@ var PRODUCTS=[
  {id:11,cat:"Accessories",name:"Power bank 10000 mAh",spec:"Dual output, fast charge",price:1199,kind:"bank",tint:3},
  {id:12,cat:"Accessories",name:"Memory card 128 GB",spec:"Class 10, with adapter",price:699,kind:"sd",tint:2}
 ];
+
+/* ---- Google Sheet product feed ----
+   Paste the Apps Script web app link (or a published CSV link) between the quotes. Leave empty to use the built-in list above. */
+/* Google reviews: copy the words exactly as written on Google. stars 1 to 5. */
+var GOOGLE={rating:"",count:""};
+var REVIEWS=[{"name": "Ankit Virmani", "stars": 5, "text": "A very genuine and professional Showroom. I have been dealing with tem since last 15 years, jeet bhaiya is a gem of a person.Jeet Telecom is the best.", "when": "Google review"}, {"name": "Gaurav Tripathi", "stars": 5, "text": "Bought a Phone from Jeet bhai, smooth as always, Jeet telecom is the oldest mobile store of the town, i suppose approx 23 -24 years old. Well behaved person, courteous staff, this shop is a 5 star rated place, Doonites do visit them.", "when": "Google review"}, {"name": "Virk Saab", "stars": 5, "text": "Bahut hi accha experience raha. Shop ke staff ka behaviour friendly aur professional tha. Phone bilkul original mila aur achhi price me diya. Sabhi features aur warranty ki proper information di gayi. Or sath me bhttt sare gifts bi die , Or service bhi kaafi fast thi. Jo bhi mobile kharidna chahta hai, main is shop ko zarur recommend karunga ,", "when": "Google review"}, {"name": "sakshi mittal", "stars": 5, "text": "This is very genuine shop to buy any phone or accessories. Staff is very good and i have purchased many phones from here", "when": "Google review"}, {"name": "VisualsbyVinay VinayDobhal", "stars": 5, "text": "Smooth experience. Got my product within 10 minutes . Best discount . Recommend to everyone", "when": "Google review"}, {"name": "Pooja Joshi", "stars": 5, "text": "Jeet telecom ek achi shop Hai, rates are good, Mera experience yahan 5 star raha. Highly recommend.", "when": "Google review"}, {"name": "Sameer Sakhuja", "stars": 5, "text": "I came here on someone's reference and believe me I am not disappointed,  A very good mobile shop and good people to buy things from.", "when": "Google review"}, {"name": "Chandra Prakash", "stars": 5, "text": "I came on someone's reference, this is the best shop , very cooperative  and humble. I will 100% recommend", "when": "Google review"}];
+var SHEET_URL="";
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+function parseCSV(t){
+ var rows=[],row=[],f="",q=false,i,c;
+ for(i=0;i<t.length;i++){c=t[i];
+  if(q){if(c=='"'){if(t[i+1]=='"'){f+='"';i++}else q=false}else f+=c}
+  else if(c=='"')q=true;
+  else if(c==","){row.push(f);f=""}
+  else if(c=="\n"||c=="\r"){if(c=="\r"&&t[i+1]=="\n")i++;row.push(f);rows.push(row);row=[];f=""}
+  else f+=c}
+ if(f!==""||row.length){row.push(f);rows.push(row)}
+ var h=rows.shift().map(function(x){return x.trim()});
+ return rows.filter(function(r){return r.join("").trim()!==""}).map(function(r){var o={};h.forEach(function(k,j){o[k]=r[j]});return o});
+}
+var TYPES=["phone","keypad","charger","cable","glass","case","buds","neck","bank","sd"];
+function pick(o,names){for(var k in o){if(names.indexOf(k.toLowerCase().replace(/[^a-z]/g,""))>-1)return o[k]}return ""}
+function rowsToProducts(rows){
+ var out=[];
+ rows.forEach(function(o){
+  var name=String(pick(o,["name","product","productname"])).trim();
+  var price=Number(String(pick(o,["price","rate","mrp"])).replace(/[^0-9.]/g,""));
+  if(!name||!price)return;
+  var cat=String(pick(o,["category"])).trim()||"Accessories";
+  var type=String(pick(o,["type","drawing"])).trim().toLowerCase();
+  if(TYPES.indexOf(type)<0)type=/phone|mobile/i.test(cat)?"phone":"charger";
+  var stock=String(pick(o,["instock","stock","available"])).trim().toLowerCase();
+  out.push({id:out.length+1,cat:cat,name:name,spec:String(pick(o,["details","spec","description"])).trim(),price:price,
+   kind:type,tint:(out.length%4)+1,img:String(pick(o,["image","photo","imageurl"])).trim(),out:(stock==="no"||stock==="n"||stock==="0"||stock==="false"||stock==="out")});
+ });
+ return out;
+}
+function loadSheet(){
+ if(!SHEET_URL)return;
+ fetch(SHEET_URL).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){
+  t=t.trim();var rows=(t[0]==="["||t[0]==="{")?JSON.parse(t):parseCSV(t);
+  if(!Array.isArray(rows))rows=rows.products||rows.data||[];
+  var list=rowsToProducts(rows);
+  if(list.length){PRODUCTS=list;cart={};renderChips();renderGrid();renderCart();}
+ }).catch(function(){/* keep the built-in list if the sheet cannot be read */});
+}
 var INK="#10283a",SIG="#e4570f";
 function art(k){
  var s={
@@ -373,19 +438,22 @@ function renderLooks(){
  }).join("");
 }
 function renderChips(){
- $("chips").innerHTML=["All","Phones","Accessories"].map(function(c){return '<button class="chip" data-c="'+c+'" aria-pressed="'+(c===cat)+'">'+c+'</button>'}).join("");
+ var cats=["All"];PRODUCTS.forEach(function(p){if(cats.indexOf(p.cat)<0)cats.push(p.cat)});
+ if(cats.indexOf(cat)<0)cat="All";
+ $("chips").innerHTML=cats.map(function(c){return '<button class="chip" data-c="'+c+'" aria-pressed="'+(c===cat)+'">'+c+'</button>'}).join("");
 }
 function renderGrid(){
  var q=$("q").value.trim().toLowerCase();
  var list=PRODUCTS.filter(function(p){return (cat==="All"||p.cat===cat)&&(!q||(p.name+" "+p.spec+" "+p.cat).toLowerCase().indexOf(q)>-1)});
  $("grid").innerHTML=list.length?list.map(function(p){
-  return '<article class="card"><div class="art" style="--tint:var(--t'+p.tint+')">'+art(p.kind)+'</div><div class="info"><span class="tag">'+p.cat+'</span><h3>'+p.name+'</h3><p class="spec">'+p.spec+'</p><div class="buy"><span class="price">'+rupee(p.price)+'</span><button class="add" data-id="'+p.id+'">Add</button></div></div></article>';
+  var pic=p.img?'<img src="'+esc(p.img)+'" alt="'+esc(p.name)+'" loading="lazy">':art(p.kind);
+  return '<article class="card"><div class="art" style="--tint:var(--t'+p.tint+')">'+pic+'</div><div class="info"><span class="tag">'+esc(p.cat)+'</span><h3>'+esc(p.name)+'</h3><p class="spec">'+esc(p.spec)+'</p><div class="buy"><span class="price">'+rupee(p.price)+'</span>'+(p.out?'<button class="add" disabled>Out of stock</button>':'<button class="add" data-id="'+p.id+'">Add</button>')+'</div></div></article>';
  }).join(""):'<div class="empty hand" style="grid-column:1/-1;font-size:19px">Yeh nahi mila. WhatsApp par poochiye, hum dukaan mein dekh kar bata denge.</div>';
 }
 function lines(){
  return Object.keys(cart).map(function(id){
-  var p=PRODUCTS.filter(function(x){return x.id==id})[0];return {p:p,q:cart[id]};
- });
+  var p=PRODUCTS.filter(function(x){return x.id==id})[0];return p?{p:p,q:cart[id]}:null;
+ }).filter(Boolean);
 }
 function renderCart(){
  var ls=lines(),count=0,total=0;
@@ -428,7 +496,16 @@ var hello=encodeURIComponent("Namaste Jeet Telecom, I would like to know about a
 ["heroWa","fabWa","contactWa"].forEach(function(i){$(i).href="https://wa.me/"+PHONE+"?text="+hello});
 var y=new Date().getFullYear();$("yr").textContent=y;
 try{var saved=localStorage.getItem("jt-look");if(saved&&LOOKS.some(function(l){return l.id===saved}))document.documentElement.setAttribute("data-look",saved);}catch(e){}
-renderLooks();renderChips();renderGrid();renderCart();
+function renderReviews(){
+ if(!REVIEWS.length)return;
+ $("reviews").hidden=false;
+ if(GOOGLE.rating&&GOOGLE.count)$("gsum").textContent="Rated "+GOOGLE.rating+" out of 5 on Google ("+GOOGLE.count+" reviews)";
+ $("notes").innerHTML=REVIEWS.map(function(r){
+  var s=Math.max(0,Math.min(5,r.stars||5));
+  return '<figure class="note-card"><div class="stars" role="img" aria-label="'+s+' out of 5 stars">'+"\u2605".repeat(s)+"\u2606".repeat(5-s)+'</div><blockquote>'+esc(r.text)+'</blockquote><figcaption>'+esc(r.name)+(r.when?', '+esc(r.when):'')+'</figcaption></figure>';
+ }).join("");
+}
+renderLooks();renderChips();renderGrid();renderCart();renderReviews();loadSheet();
 </script>
 </body>
 </html>
